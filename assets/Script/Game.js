@@ -233,12 +233,9 @@ cc.Class({
         }
         // console.log(this.BgNode[0].node.x);
         if(this.BgNode[0].node.x >= 231 && this.BgNode[0].node.x <= 240) { //这里有问题
-            // console.log("lalalala");
             this.BgNode[1].node.x = -1798;
         }
         if(this.BgNode[1].node.x >= 231 && this.BgNode[1].node.x <= 240) {
-        //  this.newBg.setPosition(cc.v2(-1798, -4));
-            // console.log("hahah");
             this.BgNode[0].node.x = -1798;
         }
     },
