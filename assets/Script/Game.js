@@ -201,37 +201,13 @@ cc.Class({
             else if(random >= 5 && random <= 9) {
                 this.newStarActivity();
             }
-            // 使用给定的模板在场景中生成一个新节点
-            // var newBg = cc.instantiate(this.bgPrefab);
-            // 将新增的节点添加到 Game 节点下面
-            // console.log()
-            // if(this.btPlay._Pressed == true) { //play开始生成
-
-            // if(newBg) {
-            //     this.bgPool.put(newBg);//回收对象
-            // }
-            // if(this.bgPool.size() > 0) {  
-            //     var newBg = this.bgPool.get();//取对象
-            // }
-            // else {
-            //     var newBg = cc.instantiate(this.bgPrefab);
-            // }
-            // newBg.parent = this.node;
-
-            // var newGround = newBg.getComponentInChildren("Ground");
-            // this.node.scaleY = 1;
-            // newGround.scaleY = 0.1;
-            // console.log("newBg"+newBg);
            // 为背景设置一个位置
             this.timer = 0;
             this.Bgs = this.node.getComponentsInChildren('BackGround');
             for(var i = 0; i < this.Bgs.length; i++){
                 this.Bgs[i].speedX = 400;
              }
-
-         // }
         }
-        // console.log(this.BgNode[0].node.x);
         if(this.BgNode[0].node.x >= 231 && this.BgNode[0].node.x <= 240) { //这里有问题
             this.BgNode[1].node.x = -1798;
         }
