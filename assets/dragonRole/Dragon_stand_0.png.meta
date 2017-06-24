@@ -1,0 +1,30 @@
+{
+  "ver": "1.0.0",
+  "uuid": "578aa65c-d91d-4399-b8a1-6cd82a465f2c",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "subMetas": {
+    "Dragon_stand_0": {
+      "ver": "1.0.3",
+      "uuid": "49610f7a-183d-4904-ab24-784cdf8f0600",
+      "rawTextureUuid": "578aa65c-d91d-4399-b8a1-6cd82a465f2c",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": -9.5,
+      "offsetY": 8.5,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 352,
+      "height": 382,
+      "rawWidth": 371,
+      "rawHeight": 399,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}
