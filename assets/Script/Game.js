@@ -35,10 +35,11 @@ cc.Class({
         btRePlay: {
             default: null,
             type: cc.Button
-        }
+        },
     },
 
     btPlayClick: function() {
+
         this.btPausePressed = false;
         this.btPlayPressed = true;
         for(var i = 0; i < this.Bgs.length; i++){
@@ -48,6 +49,7 @@ cc.Class({
     },
 
     btPauseClick: function() {
+
         this.btPausePressed = true;
         this.btPlayPressed = false;
         for(var i = 0; i < this.Bgs.length; i++){
@@ -56,27 +58,29 @@ cc.Class({
     },
 
     btRePlayClick: function() {
+
         cc.game.restart ();
     },
 
-     getRandom: function () {
+    getRandom: function () {
+
         var range = [0,1,2,3,4,5,6,7,8,9];
         var random = 10;
         random = Math.ceil(Math.random() * 9); //ceil向上取整
         return random;
     },
 
-    newScore: function() {
+    newScore: function() { //分数节点的新建以及内容的更新
+
         var node = new cc.Node();
         this.sp = node.addComponent(cc.Label);
-        // console.log(this.sp);
         node.parent = this.node;
         node.setPosition(-345,200);
         this.sp.string = "Score: " + this.score;
-        // console.log("scorelalala: ");
     },
 
-    newPauActivity: function() {
+    newPauActivity: function() { //怪物预制的生成
+
         var newPau = cc.instantiate(this.monsterPrefab);
         newPau.parent = this.node;
         // var randomX = this.getRandom();
@@ -98,7 +102,8 @@ cc.Class({
     },
 
 
-    newStarActivity: function() {
+    newStarActivity: function() { //星星预制的生成
+
         var newStar = cc.instantiate(this.starPrefab);
         newStar.parent = this.node;
         var randomX = this.getRandom();
@@ -132,44 +137,51 @@ cc.Class({
         return 1;
     },
 
+    groundHeightChange: function(ground) { //地板的高低
+
+        var random = this.getRandom();
+        var isHeightChange = false;
+        if(random >= 0 && random <= 3) {
+            ground.node.y = -355;
+            isHeightChange = true;
+        }
+        else {
+            ground.node.y = -268;
+            isHeightChange = false;
+        }
+        return isHeightChange;
+    },
 
     // use this for initialization
     onLoad: function () {
-        this.Bg = this.node.getComponentInChildren('BackGround');
-        // this.Bgs = this.node.getComponentsInChildren('BackGround');
+
         this.btPlayPressed = false;
         this.btPausePressed = false;
-        this.bgPool = new cc.NodePool();
         this.sPositionX = 100;
         this.sPositionY = 0;
         this.mPositionX = 0;
         this.mPositionY = 0;
         this.tPositionX = 0;
-        var length = 5;
 
         this.newBg = cc.instantiate(this.bgPrefab);
         this.newBg.parent = this.node;
         this.newBg.setPosition(cc.v2(-1798, -4));
-        console.log(this.newBg.getPosition());
-        // for(var i = 0; i < 5; i++){
-        //     var newBg = cc.instantiate(this.bgPrefab);
-        //     this.bgPool.put(newBg);
-        // }
         this.posX = 0; //背景的当前位置
         this.timer = 0; //计时器
         this.starTimer = 0;
         var len = 0;
         this.BgNode = [];
+        this.groundNode = [];
         this.Bgs = this.node.getComponentsInChildren('BackGround');
         for(var i = 0; i < this.Bgs.length; i++){
             if(this.Bgs[i].acce == 800) {
                 this.BgNode[len] = this.Bgs[i];
+                this.groundNode[len] = this.BgNode[len].getComponentInChildren("Ground");
+                // console.log("*******");
+                // console.log(this.groundNode[len].node);
                 len ++;
             }
         }
-        console.log(this.BgNode);
-        
-        console.log(this.Bgs);
         this.btPlay.node.on('click', this.btPlayClick, this);
         this.btPause.node.on('click', this.btPauseClick, this);
         this.btRePlay.node.on('click', this.btRePlayClick, this);
@@ -177,16 +189,10 @@ cc.Class({
 
     // called every frame, uncomment this function to activate update callback
     update: function (dt) {
-        // console.log(this.Bgs);
+
         if(this.btPlayPressed){ //按下开始键计时
             this.timer ++;
             
-        }
-        this.starTimer ++;
-
-        if(this.starTimer == 1) {
-            console.log(this.Bgs[0].node.x);
-            console.log(this.Bgs[1].node.x);
         }
 
         if(this.timer >= 200) {
@@ -201,18 +207,21 @@ cc.Class({
             else if(random >= 5 && random <= 9) {
                 this.newStarActivity();
             }
-           // 为背景设置一个位置
+
             this.timer = 0;
             this.Bgs = this.node.getComponentsInChildren('BackGround');
             for(var i = 0; i < this.Bgs.length; i++){
                 this.Bgs[i].speedX = 400;
              }
         }
-        if(this.BgNode[0].node.x >= 231 && this.BgNode[0].node.x <= 240) { //这里有问题
+        if(this.BgNode[0].node.x >= 231 && this.BgNode[0].node.x <= 236) { //这里有问题
             this.BgNode[1].node.x = -1798;
+            this.groundHeightChange(this.groundNode[1]);
         }
-        if(this.BgNode[1].node.x >= 231 && this.BgNode[1].node.x <= 240) {
+        if(this.BgNode[1].node.x >= 231 && this.BgNode[1].node.x <= 236) {
             this.BgNode[0].node.x = -1798;
+            this.groundHeightChange(this.groundNode[0]);
+            
         }
     },
 });
