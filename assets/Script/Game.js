@@ -101,7 +101,6 @@ cc.Class({
 
     },
 
-
     newStarActivity: function() { //星星预制的生成
 
         var newStar = cc.instantiate(this.starPrefab);
@@ -214,6 +213,7 @@ cc.Class({
                 this.Bgs[i].speedX = 400;
              }
         }
+        
         if(this.BgNode[0].node.x >= 231 && this.BgNode[0].node.x <= 236) { //这里有问题
             this.BgNode[1].node.x = -1798;
             this.groundHeightChange(this.groundNode[1]);

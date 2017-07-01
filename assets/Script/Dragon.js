@@ -65,6 +65,8 @@ cc.Class({
         }
     },
 
+    // 比较当前bgs的positionX 为-967
+
     /**
      * 当碰撞产生的时候调用
      * @param  {Collider} other 产生碰撞的另一个碰撞组件
