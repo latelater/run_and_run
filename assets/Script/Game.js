@@ -1,65 +1,78 @@
-const BackGround = require('BackGround');
 
 cc.Class({
     extends: cc.Component,
 
     properties: {
+        bgpeedX: 0,
+        bgAcce: 0,
         bgPrefab: {
             default: null,
-            type: cc.Prefab
+            type: cc.Prefab,
         },
         starPrefab: {
             default: null,
-            type: cc.Prefab
+            type: cc.Prefab,
         },
         monsterPrefab: {
             default: null,
-            type: cc.Prefab
+            type: cc.Prefab,
         },
         trapPrefab: {
             default: null,
             type: cc.Prefab,
         },
-        role: {
+        dragonRole: {
             default: null,
-            type: cc.Node
+            type: cc.Node,
         },
         btPlay: {
             default: null,
-            type: cc.Button
+            type: cc.Button,
         },        
         btPause: {
             default: null,
-            type: cc.Button
+            type: cc.Button,
         },
         btRePlay: {
             default: null,
-            type: cc.Button
+            type: cc.Button,
+        },
+        // 按键音效资源
+        btnAudio: {
+            default: null,
+            url: cc.AudioClip,
         },
     },
 
     btPlayClick: function() {
-
+        
         this.btPausePressed = false;
         this.btPlayPressed = true;
-        for(var i = 0; i < this.Bgs.length; i++){
-            this.Bgs[i].speedX = 400;
-        } 
-        
+        this.updateAllSpeedX();
+        this.playBtnSound();   
     },
 
     btPauseClick: function() {
-
+        // if( state != gaming){
+        //     return;
+        // }
         this.btPausePressed = true;
         this.btPlayPressed = false;
+        this.Bgs = this.node.getComponentsInChildren('BackGround');
         for(var i = 0; i < this.Bgs.length; i++){
             this.Bgs[i].speedX = 0;
         } 
+        this.playBtnSound();
     },
 
     btRePlayClick: function() {
 
         cc.game.restart ();
+        this.playBtnSound();
+    },
+
+    playBtnSound: function () {  // 调用声音引擎播放声音
+        cc.audioEngine.playEffect(this.btnAudio, false);
     },
 
     getRandom: function () {
@@ -83,9 +96,9 @@ cc.Class({
 
         var newPau = cc.instantiate(this.monsterPrefab);
         newPau.parent = this.node;
-        // var randomX = this.getRandom();
+        var randomX = this.getRandom();
         var randomY = this.getRandom();
-        this.mPositionX = this.sPositionX + 150;
+        this.mPositionX = this.sPositionX - 150;
 
         if(randomY >= 0 && randomY <= 3){
             this.mPositionY = 35;
@@ -102,9 +115,10 @@ cc.Class({
     },
 
     newStarActivity: function() { //星星预制的生成
-
+// 分拆
         var newStar = cc.instantiate(this.starPrefab);
         newStar.parent = this.node;
+
         var randomX = this.getRandom();
         var randomY = this.getRandom();
         this.sPositionX = -500;
@@ -112,13 +126,13 @@ cc.Class({
         if(randomX >= 0 && randomX <= 1){
             this.sPositionX = -500;
         }
-        else if(randomX >= 2 && randomX <= 4){
+        else if(randomX > 1 && randomX <= 4){
             this.sPositionX = -300;
         }
-        else if(randomX >= 5 && randomX <= 6){
+        else if(randomX > 4 && randomX <= 6){
             this.sPositionX = -200;
         }
-        else if(randomX >= 7 && randomX <=9){
+        else if(randomX > 6 && randomX <=9){
             this.sPositionX = -400;
         }
 
@@ -136,6 +150,35 @@ cc.Class({
         return 1;
     },
 
+    newTrap: function() {
+        var newTrap = cc.instantiate(this.trapPrefab);
+        newTrap.parent = this.node;
+
+        var randomX = this.getRandom();
+        // this.tPositionX = -1200;
+        if(randomX >= 0 && randomX <= 4) {
+            this.tPositionX = -1200;
+            var padding0 = this.tPositionX - this.getGroundPositionX(0); // 距离背景0的距离
+            var padding1 = this.tPositionX - this.getGroundPositionX(1); // 距离背景1的距离
+            if(Math.abs(padding0) <= Math.abs(padding1)) { 
+                this.tPositionY = this.groundNode[0].node.y;
+            }
+            else {
+                this.tPositionY = this.groundNode[1].node.y;
+            }
+        }
+        // else {
+        //     if(randomX >= 4 && randomX <= 6) {
+        //         this.tPositionX = -1300;
+        //     }
+        // }
+
+        
+        newTrap.setPosition(cc.v2(this.tPositionX, this.tPositionY));
+        newTrap.speedX = 400;
+        
+    },
+
     groundHeightChange: function(ground) { //地板的高低
 
         var random = this.getRandom();
@@ -145,10 +188,35 @@ cc.Class({
             isHeightChange = true;
         }
         else {
-            ground.node.y = -268;
+            ground.node.y = -233;
             isHeightChange = false;
         }
         return isHeightChange;
+    },
+
+    getGroundTop: function(number) {
+
+        var thisGround = this.groundNode[number];
+        var groundTop = thisGround.node.y + thisGround.node.height/2;
+        return groundTop;
+    },
+
+    getGroundPositionX: function(number) {
+        return this.BgNode[number].node.x;
+    },
+
+    getGroundLeft: function(bg) {
+
+        var thisBackground = bg;
+        var groundRight = thisBackground.x - thisBackground.width/2;
+        return groundRight;
+    },
+
+    updateAllSpeedX: function() {
+        this.Bgs = this.node.getComponentsInChildren('BackGround');
+        for(var i = 0; i < this.Bgs.length; i++){
+            this.Bgs[i].speedX = this.bgpeedX;
+        }
     },
 
     // use this for initialization
@@ -160,14 +228,20 @@ cc.Class({
         this.sPositionY = 0;
         this.mPositionX = 0;
         this.mPositionY = 0;
-        this.tPositionX = 0;
+        this.tPositionX = 583;
+        this.tPositionY = -177;
+
+        this.bgpeedX = 400;
+        this.bgAcce = 10;
 
         this.newBg = cc.instantiate(this.bgPrefab);
         this.newBg.parent = this.node;
-        this.newBg.setPosition(cc.v2(-1798, -4));
+        this.newBg.setPosition(cc.v2(3000, -4)); //初始随便放在一个地方
         this.posX = 0; //背景的当前位置
         this.timer = 0; //计时器
         this.starTimer = 0;
+        this.trapTimer = 0;
+        this.monsterTimer = 0;
         var len = 0;
         this.BgNode = [];
         this.groundNode = [];
@@ -176,11 +250,12 @@ cc.Class({
             if(this.Bgs[i].acce == 800) {
                 this.BgNode[len] = this.Bgs[i];
                 this.groundNode[len] = this.BgNode[len].getComponentInChildren("Ground");
-                // console.log("*******");
-                // console.log(this.groundNode[len].node);
                 len ++;
             }
         }
+
+        this.role = this.dragonRole.getComponent("Dragon");
+        // console.log(this.role.score);
         this.btPlay.node.on('click', this.btPlayClick, this);
         this.btPause.node.on('click', this.btPauseClick, this);
         this.btRePlay.node.on('click', this.btRePlayClick, this);
@@ -191,35 +266,57 @@ cc.Class({
 
         if(this.btPlayPressed){ //按下开始键计时
             this.timer ++;
-            
+            this.starTimer ++;
+            this.monsterTimer ++;
+            this.trapTimer ++;
         }
 
-        if(this.timer >= 200) {
-            var random = this.getRandom();
-            if(random >= 0 && random <= 1) {
-                this.newPauActivity();
+        if(this.role.score >= 5 && this.role.score <= 20 && this.bgpeedX <= 550) { // 在分数为5到20之间加速至550
+            this.bgpeedX += this.bgAcce*dt;
+            this.updateAllSpeedX();
+        }
+        else {
+            if(this.role.score > 20 && this.role.score <= 30 && this.bgpeedX <= 650) {
+                this.bgpeedX += this.bgAcce*dt;
+                this.updateAllSpeedX();
             }
-            else if(random >= 2 && random <= 4) {
-                this.newStarActivity();
-                this.newPauActivity();
+            else {
+                if(this.role.score > 30 && this.bgpeedX <= 800) {
+                    this.bgpeedX += this.bgAcce*dt;
+                    this.updateAllSpeedX();
+                } 
             }
-            else if(random >= 5 && random <= 9) {
-                this.newStarActivity();
-            }
-
-            this.timer = 0;
-            this.Bgs = this.node.getComponentsInChildren('BackGround');
-            for(var i = 0; i < this.Bgs.length; i++){
-                this.Bgs[i].speedX = 400;
-             }
         }
         
-        if(this.BgNode[0].node.x >= 231 && this.BgNode[0].node.x <= 236) { //这里有问题
-            this.BgNode[1].node.x = -1798;
+        if(this.starTimer >= 200) {
+            // console.log("12344556890");
+            this.newStarActivity();
+            this.updateAllSpeedX();
+            this.starTimer = 0;
+        }
+
+        if(this.timer >= 300) {
+            var random = this.getRandom();
+            if(random >= 0 && random <= 3) {
+                this.newPauActivity();
+            }
+            else if(random >= 4 && random <= 6) {
+                this.newStarActivity();
+                this.newPauActivity();
+            }
+            else if(random >= 7 && random <= 9) {
+                this.newTrap();
+            }
+            this.timer = 0;
+            this.updateAllSpeedX();
+        }
+
+        if(this.BgNode[0].node.x >= 231 && this.BgNode[0].node.x <= 245) { //这里有问题
+            this.BgNode[1].node.x = this.getGroundLeft(this.BgNode[0].node) - this.BgNode[1].node.width/2;
             this.groundHeightChange(this.groundNode[1]);
         }
-        if(this.BgNode[1].node.x >= 231 && this.BgNode[1].node.x <= 236) {
-            this.BgNode[0].node.x = -1798;
+        if(this.BgNode[1].node.x >= 231 && this.BgNode[1].node.x <= 245) {
+            this.BgNode[0].node.x = this.getGroundLeft(this.BgNode[1].node) - this.BgNode[0].node.width/2;
             this.groundHeightChange(this.groundNode[0]);
             
         }

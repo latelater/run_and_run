@@ -23,10 +23,7 @@ cc.Class({
 
     // use this for initialization
     onLoad: function () {
-        this.randomY = this.getRandom();
-        if(this.randomY >= 0 && this.randomY <= 3){       
-            // this.node.scaleY = 0.7;
-        }
+        
     },
 
     // called every frame, uncomment this function to activate update callback

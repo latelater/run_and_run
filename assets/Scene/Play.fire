@@ -510,9 +510,7 @@
     "defaultAnimation": "walk",
     "loop": true,
     "_premultipliedAlpha": false,
-    "_N$skeletonData": {
-      "__uuid__": "5b9dd9ef-b660-44b5-9c0d-6725d91445ee"
-    },
+    "_N$skeletonData": null,
     "_N$timeScale": 1,
     "_N$debugSlots": false,
     "_N$debugBones": false

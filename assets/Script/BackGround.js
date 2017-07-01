@@ -22,8 +22,11 @@ cc.Class({
         return this.node.getPositionX();
     },
 
+
     // called every frame, uncomment this function to activate update callback
     update: function (dt) {
         this.node.x += this.speedX * dt;
     },
+
+
 });
